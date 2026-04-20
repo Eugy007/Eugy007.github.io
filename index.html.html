@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eugene | Full-Stack Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --navy:#0f172a;
+      --accent:#3b82f6;
+      --accent-dark:#2563eb;
+      --accent-soft:#eff6ff;
+      --text:#1e293b;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --bg:#ffffff;
+      --bg-alt:#f8fafc;
+      --success:#22c55e;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+    /* SCROLL PROGRESS BAR */
+    #progress-bar{
+      position:fixed;top:0;left:0;z-index:200;
+      height:3px;width:0%;
+      background:linear-gradient(90deg,var(--accent),#60a5fa);
+      transition:width .08s linear;
+      pointer-events:none;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);height:64px;padding:0 24px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .nav-logo{font-weight:700;color:var(--navy);text-decoration:none;font-size:1.05rem}
+    .nav-logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:20px;align-items:center;list-style:none}
+    .nav-links a{
+      color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem;
+      position:relative;padding-bottom:2px;
+      transition:color .2s;
+    }
+    .nav-links a::after{
+      content:'';position:absolute;bottom:-2px;left:0;right:0;
+      height:2px;background:var(--accent);
+      transform:scaleX(0);transform-origin:left;
+      transition:transform .2s;
+    }
+    .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+    .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+
+    /* HERO */
+    .hero{
+      min-height:100vh;display:flex;align-items:center;
+      background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);
+      padding:96px 24px 48px;
+    }
+    .hero-inner{max-width:980px;margin:0 auto;width:100%}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,0.12);border-radius:999px;padding:6px 12px;color:#93c5fd;font-weight:600;margin-bottom:18px;font-size:.85rem}
+    .hero-badge::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--success);display:block;flex-shrink:0;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+    .hero h1{font-size:clamp(2.25rem,5vw,3.5rem);color:#fff;line-height:1.05;margin-bottom:12px}
+    .hero h1 span{color:var(--accent)}
+    .hero p{color:#cbd5e1;max-width:640px;margin-bottom:20px;font-size:1.02rem}
+    .hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:10px;font-weight:700;text-decoration:none;cursor:pointer;transition:background .18s,transform .15s,border-color .18s,box-shadow .18s}
+    .btn-primary{background:var(--accent);color:#fff;border:0}
+    .btn-primary:hover{background:var(--accent-dark);transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,0.3)}
+    .btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.18)}
+    .btn-outline:hover{border-color:rgba(255,255,255,0.5);transform:translateY(-2px)}
+    .hero-stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
+    .stat-num{font-size:1.6rem;font-weight:800;color:#fff}
+    .stat-label{font-size:.82rem;color:#9aa6bb}
+
+    /* SECTIONS */
+    section{padding:56px 24px}
+    .section-inner{max-width:980px;margin:0 auto}
+    .section-label{font-size:.78rem;font-weight:700;text-transform:uppercase;color:var(--accent);letter-spacing:.08em;margin-bottom:8px}
+    .section-title{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:800;color:var(--navy);margin-bottom:10px}
+    .section-sub{color:var(--muted);max-width:640px;margin-bottom:18px}
+
+    /* PROJECTS */
+    #projects{background:var(--bg-alt)}
+    .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+    .project-card{
+      background:var(--bg);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden;display:flex;flex-direction:column;
+      transition:transform .22s,box-shadow .22s,border-color .22s;
+    }
+    .project-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 40px rgba(16,24,40,0.08);
+      border-color:rgba(59,130,246,0.25);
+    }
+    .project-thumb{height:200px;overflow:hidden;background:#f3f4f6;display:flex;align-items:center;justify-content:center}
+    .project-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .4s ease}
+    .project-card:hover .project-thumb img{transform:scale(1.04)}
+    .project-body{padding:16px;display:flex;flex-direction:column;gap:10px}
+    .project-tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{background:var(--accent-soft);color:var(--accent);padding:5px 10px;border-radius:999px;font-weight:700;font-size:.78rem}
+    .project-body h3{margin-top:4px;font-size:1.05rem;color:var(--navy)}
+    .project-body p{color:var(--muted);font-size:.9rem;line-height:1.55}
+    .project-features{list-style:none;color:var(--muted);margin:0}
+    .project-features li{position:relative;padding:4px 0 4px 20px;font-size:.88rem}
+    .project-features li::before{content:'✓';position:absolute;left:0;color:var(--success);font-weight:800}
+    .project-links{margin-top:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .project-link{color:var(--accent);font-weight:700;text-decoration:none;font-size:.9rem;transition:color .15s,gap .15s}
+    .project-link:hover{color:var(--accent-dark)}
+    .project-link.private{color:var(--muted);font-weight:400;font-style:italic;cursor:default}
+
+    /* SKILLS */
+    .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .skill-group{
+      background:var(--bg-alt);border:1px solid var(--border);padding:14px;border-radius:10px;
+      transition:border-color .2s,transform .2s;
+    }
+    .skill-group:hover{border-color:rgba(59,130,246,0.3);transform:translateY(-2px)}
+    .skill-group-title{font-size:.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+    .skill-list{display:flex;flex-wrap:wrap;gap:8px}
+    .skill-pill{
+      background:var(--bg);border:1px solid var(--border);padding:5px 10px;
+      border-radius:8px;font-weight:600;color:var(--text);font-size:.88rem;
+      transition:border-color .15s,color .15s;
+    }
+    .skill-pill:hover{border-color:var(--accent);color:var(--accent)}
+
+    /* ABOUT */
+    #about{background:var(--bg-alt)}
+    .about-grid{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center}
+    .about-photo-wrap{display:flex;flex-direction:column;align-items:center}
+    .about-avatar{
+      width:260px;height:260px;border-radius:50%;overflow:hidden;
+      border:4px solid #fff;box-shadow:0 8px 32px rgba(16,24,40,0.10);
+      background:linear-gradient(135deg,#1e3a5f,#3b82f6);flex-shrink:0;
+      transition:box-shadow .25s,transform .25s;
+    }
+    .about-avatar:hover{box-shadow:0 16px 48px rgba(59,130,246,0.2);transform:translateY(-4px)}
+    .about-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;image-rendering:auto}
+    .about-text p{color:var(--muted);margin-bottom:14px;line-height:1.8}
+
+    /* CONTACT */
+    .contact-form{display:flex;flex-direction:column;gap:12px;max-width:640px;margin-bottom:28px}
+    .form-row{display:flex;gap:12px}
+    .form-group{flex:1;display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:.82rem;font-weight:600;color:var(--muted)}
+    .form-group input,.form-group textarea{
+      padding:12px;border-radius:8px;border:1px solid var(--border);
+      font-size:.95rem;font-family:inherit;background:var(--bg);color:var(--text);
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,0.12)}
+    .form-group textarea{resize:none;min-height:140px;max-height:240px;overflow:auto}
+    .form-note{font-size:.85rem;color:var(--muted);margin-top:4px}
+    .contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+    .contact-card{
+      display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;
+      background:var(--bg-alt);border:1px solid var(--border);
+      text-decoration:none;color:inherit;transition:transform .15s,border-color .15s,box-shadow .15s;
+    }
+    .contact-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 6px 20px rgba(59,130,246,0.1)}
+    .contact-icon{width:48px;height:48px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent);font-size:1rem;flex-shrink:0}
+    .contact-label{font-size:.75rem;color:var(--muted);font-weight:700}
+    .contact-val{font-size:.88rem;color:var(--navy);font-weight:700;word-break:break-all}
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    footer{background:var(--navy);color:#9aa6bb;padding:28px 24px;text-align:center}
+    footer span{color:var(--accent);font-weight:700}
+
+    @media(max-width:880px){
+      .about-grid{grid-template-columns:1fr;justify-items:center;text-align:center}
+      .about-avatar{width:180px;height:220px}
+    }
+    @media(max-width:640px){
+      .form-row{flex-direction:column}
+      nav{padding:0 14px}
+      .nav-links{display:none}
+      .project-thumb{height:160px}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-bar" role="progressbar" aria-hidden="true"></div>
+
+  <nav>
+    <a class="nav-logo" href="#">Eugene<span></span></a>
+    <ul class="nav-links" role="navigation" aria-label="Primary navigation">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="btn btn-primary" href="#contact" style="padding:10px 16px;font-size:.92rem">Hire Me</a>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-inner">
+        <div class="hero-badge" data-aos="fade-down" data-aos-duration="600">Open to Internship and Employment opportunities</div>
+        <h1 id="hero-heading" data-aos="fade-up" data-aos-delay="100">Hi, I'm <span>Eugene</span>.<br/>Full&#8209;Stack Developer.</h1>
+        <p data-aos="fade-up" data-aos-delay="200">I build real world web applications using ASP.NET Core MVC and modern UI frameworks. From internship platforms to management systems I ship complete solutions, not tutorials.</p>
+        <div class="hero-cta" data-aos="fade-up" data-aos-delay="300">
+          <a class="btn btn-primary" href="#projects">View My Work</a>
+          <a class="btn btn-outline" href="#contact">Get In Touch</a>
+        </div>
+        <div class="hero-stats" data-aos="fade-up" data-aos-delay="400">
+          <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Projects Built</div></div>
+          <div class="stat"><div class="stat-num">ASP.NET</div><div class="stat-label">Primary Stack</div></div>
+          <div class="stat"><div class="stat-num">Kenya</div><div class="stat-label">Based In</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" aria-labelledby="projects-heading">
+      <div class="section-inner">
+        <div class="section-label" data-aos="fade-up">What I've built</div>
+        <h2 id="projects-heading" class="section-title" data-aos="fade-up" data-aos-delay="50">My Projects</h2>
+        <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Real systems built from scratch each one solving a specific problem with a complete user flow.</p>
+
+        <div class="projects-grid">
+          <article class="project-card" aria-labelledby="internlink-title" data-aos="fade-up" data-aos-delay="100">
+            <div class="project-thumb">
+              <img src="images/internlink.jpg" alt="InternLinkKE dashboard screenshot" />
+            </div>
+            <div class="project-body">
+              <div class="project-tags">
+                <span class="tag">ASP.NET MVC</span>
+                <span class="tag">SQL Server</span>
+                <span class="tag">REST API</span>
+                <span class="tag">JWT Auth</span>
+              </div>
+              <h3 id="internlink-title">InternLinkKE</h3>
+              <p>A full internship and attachment management platform built for the Kenyan market. Supports Student, Company, and Admin roles with dedicated dashboards and workflows.</p>
+              <ul class="project-features">
+                <li>Role-based dashboards (Student, Company, Admin)</li>
+                <li>Opportunity posting and application management</li>
+                <li>CV and document file uploads</li>
+                <li>Secured REST API with JWT authentication</li>
+              </ul>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/Eugy007" target="_blank" rel="noopener noreferrer">→ GitHub</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card" aria-labelledby="gym-title" data-aos="fade-up" data-aos-delay="200">
+            <div class="project-thumb">
+              <img src="images/beatus.jpg" alt="Bees Park Gym Management System screenshot" />
+            </div>
+            <div class="project-body">
+              <div class="project-tags">
+                <span class="tag">ASP.NET MVC</span>
+                <span class="tag">C#</span>
+                <span class="tag">SQL Server</span>
+              </div>
+              <h3 id="gym-title">Bees Park Gym Management System</h3>
+              <p>A management system for a gym facility covering member registration, plan management, and core CRUD workflows. This is where I built solid fundamentals in ASP.NET MVC architecture.</p>
+              <ul class="project-features">
+                <li>Member registration and tracking</li>
+                <li>Membership plan management</li>
+                <li>Core ASP.NET MVC patterns</li>
+              </ul>
+              <div class="project-links">
+                <a class="project-link" href="https://github.com/Eugy007/Bees-Park-Gym-Management-System" target="_blank" rel="noopener noreferrer">→ GitHub</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" aria-labelledby="skills-heading">
+      <div class="section-inner">
+        <div class="section-label" data-aos="fade-up">What I work with</div>
+        <h2 id="skills-heading" class="section-title" data-aos="fade-up" data-aos-delay="50">Skills</h2>
+        <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Tools and technologies I use to build production ready web systems.</p>
+
+        <div class="skills-grid">
+          <div class="skill-group" data-aos="fade-up" data-aos-delay="100">
+            <div class="skill-group-title">Frontend</div>
+            <div class="skill-list">
+              <span class="skill-pill">HTML</span>
+              <span class="skill-pill">CSS</span>
+              <span class="skill-pill">JavaScript</span>
+              <span class="skill-pill">Bootstrap</span>
+            </div>
+          </div>
+          <div class="skill-group" data-aos="fade-up" data-aos-delay="150">
+            <div class="skill-group-title">Backend</div>
+            <div class="skill-list">
+              <span class="skill-pill">ASP.NET Core MVC</span>
+              <span class="skill-pill">C#</span>
+              <span class="skill-pill">REST APIs</span>
+              <span class="skill-pill">JWT Auth</span>
+              <span class="skill-pill">Entity Framework</span>
+            </div>
+          </div>
+          <div class="skill-group" data-aos="fade-up" data-aos-delay="200">
+            <div class="skill-group-title">Database</div>
+            <div class="skill-list">
+              <span class="skill-pill">SQL Server</span>
+              <span class="skill-pill">SSMS</span>
+              <span class="skill-pill">SQL Queries</span>
+            </div>
+          </div>
+          <div class="skill-group" data-aos="fade-up" data-aos-delay="250">
+            <div class="skill-group-title">Tools & Practices</div>
+            <div class="skill-list">
+              <span class="skill-pill">Visual Studio</span>
+              <span class="skill-pill">Git</span>
+              <span class="skill-pill">GitHub</span>
+              <span class="skill-pill">Debugging</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" aria-labelledby="about-heading">
+      <div class="section-inner">
+        <div class="about-grid">
+          <div class="about-photo-wrap" data-aos="fade-right" data-aos-duration="700">
+            <div class="about-avatar">
+              <img src="images/Eugene2.jpg" alt="Eugene Wambugu portrait" />
+            </div>
+          </div>
+          <div class="about-text" data-aos="fade-left" data-aos-duration="700" data-aos-delay="100">
+            <div class="section-label">Who I am</div>
+            <h2 id="about-heading" class="section-title">About Me</h2>
+            <p>I'm a full-stack developer based in Kenya, building practical web applications that solve real problems. My focus is on ASP.NET Core MVC systems from structured user facing dashboards to secure backend APIs.</p>
+			<p>I've worked across different domains including internship and attachment platforms, gym and café management systems, and knowledge base tools. In addition, I have contributed to frontend development for internal management portals, where I built and improved views used to manage application workflows and system data. This has strengthened my experience in role based access control, API security, and user focused interface design.</p>            
+			<p>I'm currently looking for an internship or employment opportunity where I can contribute to a real product, work alongside a team, and keep growing as a developer.</p>
+            <a class="btn btn-primary" href="#contact" style="margin-top:8px;display:inline-flex">Let's Connect</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-heading">
+      <div class="section-inner">
+        <div class="section-label" data-aos="fade-up">Get in touch</div>
+        <h2 id="contact-heading" class="section-title" data-aos="fade-up" data-aos-delay="50">Contact</h2>
+        <p class="section-sub" data-aos="fade-up" data-aos-delay="100">Send me a message and I'll get back to you.</p>
+
+        <form class="contact-form" action="https://formspree.io/f/xwvaqjba" method="POST" aria-label="Contact form" data-aos="fade-up" data-aos-delay="150">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Your name</label>
+              <input id="name" name="name" type="text" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Your email</label>
+              <input id="email" name="email" type="email"  required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit" style="align-self:flex-start">Send Message</button>
+          <p class="form-note">Or reach me directly using the options below.</p>
+        </form>
+
+        <div class="contact-grid">
+          <a class="contact-card" href="mailto:eugenewambugu2003@gmail.com" data-aos="fade-up" data-aos-delay="100">
+            <div class="contact-icon">✉</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-val">eugenewambugu2003@gmail.com</div>
+            </div>
+          </a>
+          <a class="contact-card" href="https://github.com/Eugy007" target="_blank" rel="noopener noreferrer" data-aos="fade-up" data-aos-delay="175">
+            <div class="contact-icon">GH</div>
+            <div>
+              <div class="contact-label">GitHub</div>
+              <div class="contact-val">github.com/Eugy007</div>
+            </div>
+          </a>
+          <a class="contact-card" href="https://linkedin.com/in/eugene-wambugu-ab07a8374" target="_blank" rel="noopener noreferrer" data-aos="fade-up" data-aos-delay="250">
+            <div class="contact-icon">in</div>
+            <div>
+              <div class="contact-label">LinkedIn</div>
+              <div class="contact-val">linkedin.com/in/eugene-wambugu</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built by <span>Eugene</span> · Full-Stack Developer · Nairobi, Kenya</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // AOS scroll animations
+    AOS.init({
+      duration: 700,
+      once: true,
+      offset: 60
+    });
+
+    // Scroll progress bar
+    const bar = document.getElementById('progress-bar');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    // Active nav link highlighting
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    function updateNav() {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+  </script>
+</body>
+</html>
