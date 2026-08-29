@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  /* Hero headline only - rounded/chunky grotesk, distinct from --font-display
+     which every other section's headings still use. */
+  --font-hero: 'Cabinet Grotesk', 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: theme('colors.bg');
+  color: theme('colors.ink');
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: theme('colors.signal.DEFAULT');
+  color: theme('colors.bg');
+}
+
+/* Visible keyboard focus everywhere, styled instead of suppressed */
+:focus-visible {
+  outline: 2px solid theme('colors.signal.DEFAULT');
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: theme('colors.bg');
+}
+::-webkit-scrollbar-thumb {
+  background: theme('colors.line');
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.mutedDim');
+}
+
+@layer utilities {
+  .bg-grid {
+    background-image: theme('backgroundImage.grid-fine');
+    background-size: theme('backgroundSize.grid-cell');
+  }
+
+  .glass {
+    background: rgba(16, 19, 26, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .fade-mask-b {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+}
